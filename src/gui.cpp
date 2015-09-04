@@ -9,7 +9,7 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-GUI::GUI(PhotoDatabase* db) : db_(db), photo_idx_(0), cache_current_idx_(0), cache_break_idx_(0)
+GUI::GUI(PhotoDatabase* db, unsigned int photo_idx) : db_(db), photo_idx_(photo_idx), cache_current_idx_(0), cache_break_idx_(0)
 {
 }
 

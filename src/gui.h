@@ -11,7 +11,7 @@ class GUI
 
 public:
 
-    GUI(PhotoDatabase* db);
+    GUI(PhotoDatabase* db, unsigned int photo_idx = 0);
 
     ~GUI();
 

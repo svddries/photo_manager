@@ -12,13 +12,19 @@ int main(int argc, char **argv)
 {
     if (argc < 4)
     {
-        std::cout << "usage: photo_manager [COMMAND] [DATABASE FILE] [IMAGE DIRECTORY]" << std::endl;
+        std::cout << "usage: photo_manager [COMMAND] [DATABASE FILE] [IMAGE DIRECTORY] <PHOTO IDX START>" << std::endl;
         return 1;
     }
 
     std::string command = argv[1];
     std::string database_filename = argv[2];
     std::string image_dir = argv[3];
+
+    unsigned int photo_idx_start = 0;
+    if (argc == 5)
+    {
+        photo_idx_start = atoi(argv[4]);
+    }
 
     PhotoDatabase db;
     loadDatabase(database_filename, db);
@@ -36,7 +42,7 @@ int main(int argc, char **argv)
 
     if (command == "gui")
     {
-        GUI gui(&db);
+        GUI gui(&db, photo_idx_start);
         gui.run();
     }
     else if (command == "scan")
