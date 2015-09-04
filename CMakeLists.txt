@@ -11,6 +11,9 @@ include_directories(
     ${Boost_INCLUDE_DIRS}
 )
 
-add_executable(photo_manager src/main.cpp)
+add_executable(photo_manager
+    src/main.cpp
+    src/md5sum.cpp
+)
 target_link_libraries(photo_manager ${OpenCV_LIBRARIES} ${Boost_LIBRARIES} ssl crypto)
 
