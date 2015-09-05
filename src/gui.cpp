@@ -9,7 +9,7 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-GUI::GUI(PhotoDatabase* db, unsigned int photo_idx) : db_(db), photo_idx_(photo_idx), cache_current_idx_(0), cache_break_idx_(0)
+GUI::GUI(PhotoDatabase* db, unsigned int photo_idx) : db_(db), photo_idx_(photo_idx)/*, cache_current_idx_(0), cache_break_idx_(0)*/
 {
 }
 
@@ -104,6 +104,21 @@ void GUI::run()
             pdata.addTag(tag_id);
 
             typed.clear();
+        }
+        else if (key == 9) // Tab
+        {
+            Id new_idx = photo_idx_ + 1;
+            while(new_idx < db_->photos().size())
+            {
+                const PhotoData& pdata = db_->photos()[new_idx];
+                if (pdata.tags().empty())
+                {
+                    photo_idx_ = new_idx;
+                    reload = true;
+                    break;
+                }
+                ++new_idx;
+            }
         }
         else
         {

@@ -24,13 +24,13 @@ private:
     unsigned int photo_idx_;
 
 
-    // Cache (circular buffer)
+//    // Cache (circular buffer)
 
-    unsigned int cache_current_idx_;
+//    unsigned int cache_current_idx_;
 
-    unsigned int cache_break_idx_;
+//    unsigned int cache_break_idx_;
 
-    std::vector<cv::Mat> photo_cache_;
+//    std::vector<cv::Mat> photo_cache_;
 
 };
 
