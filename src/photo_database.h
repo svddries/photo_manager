@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <set>
 #include <map>
 
 #include <algorithm>
@@ -22,26 +23,29 @@ struct PhotoData
 
     void addTag(Id tag)
     {
-        if (tags_.empty() || tags_.back() < tag)
-        {
-            tags_.push_back(tag);
-        }
-        else
-        {
-            tags_.push_back(tag);
-            std::sort(tags_.begin(), tags_.end());
-        }
+        tags_.insert(tag);
+//        if (tags_.empty() || tags_.back() < tag)
+//        {
+//            tags_.push_back(tag);
+//        }
+//        else
+//        {
+//            tags_.push_back(tag);
+//            std::sort(tags_.begin(), tags_.end());
+//        }
     }
 
     Id id() const { return id_; }
 
-    const std::vector<Id>& tags() const { return tags_; }
+    const std::set<Id>& tags() const { return tags_; }
+
+    bool hasTag(Id tag) const { return tags_.find(tag) != tags_.end(); }
 
 private:
 
     Id id_;
 
-    std::vector<Id> tags_;
+    std::set<Id> tags_;
 };
 
 // ----------------------------------------------------------------------------------------------------
@@ -114,6 +118,11 @@ public:
     }
 
     const std::vector<std::string>& concepts() const { return concepts_; }
+
+    bool conceptExists(const std::string& concept) const
+    {
+        return concept_to_id_.find(concept) != concept_to_id_.end();
+    }
 
     std::vector<PhotoData>& photos() { return photos_; }
 

@@ -146,9 +146,10 @@ void writeDatabase(const PhotoDatabase& db, const std::string& filename)
     {
         const PhotoData& p = db.photos()[i];
         fout << p.md5sum << " \"" << p.rel_filename << "\"";
-        for(unsigned int j = 0; j < p.tags().size(); ++j)
+
+        for(const Id& tag : p.tags())
         {
-            fout << " " << idToStr(p.tags()[j]);
+            fout << " " << idToStr(tag);
         }
         fout << std::endl;
     }

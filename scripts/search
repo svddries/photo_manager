@@ -1,0 +1,19 @@
+#! /bin/bash
+
+search_result=$(~/code/photo_manager/build/photo_manager ~/env/dbs/photos.txt ~/Dropbox/media/photos search $@)
+
+target_path=/tmp/photo-manager-search
+
+mkdir -p $target_path
+rm -rf $target_path/*
+
+num_photos=0
+while read -r photo_path
+do
+    target_name=$(basename "$photo_path")
+    ln -s "$photo_path" "$target_path/$target_name" 
+    num_photos=$((num_photos+1))
+done <<< "$search_result"
+
+echo "$num_photos photos found"
+echo "Links created in '$target_path'"
