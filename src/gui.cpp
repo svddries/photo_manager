@@ -41,8 +41,19 @@ void GUI::run()
         {
             const PhotoData& pdata = db_->photos()[photo_idx_];
             cv::Mat img = cv::imread(db_->photoPrefixPath() + pdata.rel_filename);
-            double f = std::min(800.0 / img.cols, 600.0 / img.rows);
-            cv::resize(img, photo, cv::Size(), f, f);
+
+            if (img.data)
+            {
+                double f = std::min(800.0 / img.cols, 600.0 / img.rows);
+                cv::resize(img, photo, cv::Size(), f, f);
+            }
+            else
+            {
+                photo = cv::Mat(600, 800, CV_8UC3, cv::Scalar(0, 0, 0));
+                cv::putText(photo, "Cannot read '" + pdata.rel_filename + "'", cv::Point(20, 20),
+                            cv::FONT_HERSHEY_COMPLEX_SMALL, 0.6, cv::Scalar(0, 0, 255), 1);
+            }
+
             reload = false;
             redraw = true;
         }
