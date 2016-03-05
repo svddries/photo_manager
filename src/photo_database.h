@@ -14,25 +14,14 @@ typedef unsigned long Id;
 
 struct PhotoData
 {
-    PhotoData(Id id) : id_(id), tags_complete(false), starred(false) {}
+    PhotoData(Id id) : id_(id), done_(false) {}
 
     std::string md5sum;
     std::string rel_filename;
-    bool tags_complete;
-    bool starred;
 
     void addTag(Id tag)
     {
         tags_.insert(tag);
-//        if (tags_.empty() || tags_.back() < tag)
-//        {
-//            tags_.push_back(tag);
-//        }
-//        else
-//        {
-//            tags_.push_back(tag);
-//            std::sort(tags_.begin(), tags_.end());
-//        }
     }
 
     Id id() const { return id_; }
@@ -41,11 +30,21 @@ struct PhotoData
 
     bool hasTag(Id tag) const { return tags_.find(tag) != tags_.end(); }
 
+    void setDone(bool b = true) { done_ = b; }
+
+    bool isDone() const { return done_; }
+
 private:
 
     Id id_;
 
     std::set<Id> tags_;
+
+    bool done_;
+
+//    time_t last_seen_;
+
+
 };
 
 // ----------------------------------------------------------------------------------------------------
@@ -65,12 +64,22 @@ public:
     void registerPhoto(PhotoData* p)
     {
         md5sum_to_photo_[p->md5sum] = p->id();
+        filename_to_photo_[p->rel_filename] = p->id();
     }
 
     PhotoData* findPhoto(const std::string& md5sum)
     {
         auto it = md5sum_to_photo_.find(md5sum);
         if (it != md5sum_to_photo_.end())
+            return &photos_[it->second];
+        else
+            return nullptr;
+    }
+
+    PhotoData* findPhotoByFilename(const std::string& filename)
+    {
+        auto it = filename_to_photo_.find(filename);
+        if (it != filename_to_photo_.end())
             return &photos_[it->second];
         else
             return nullptr;
@@ -142,6 +151,8 @@ private:
     std::vector<PhotoData> photos_;
 
     std::map<std::string, Id> md5sum_to_photo_;
+
+    std::map<std::string, Id> filename_to_photo_;
 
     std::vector<std::string> concepts_;
 

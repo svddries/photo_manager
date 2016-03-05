@@ -50,6 +50,25 @@ Id strToId(const std::string& s)
 
 // ----------------------------------------------------------------------------------------------------
 
+time_t strToTime(const std::string& s)
+{
+    struct tm t;
+    strptime(s.c_str(), "%Y-%m-%d-%H-%M-%S", &t);
+    return mktime(&t);
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+std::string timeToStr(time_t rawtime)
+{
+    struct tm* timeinfo = localtime(&rawtime);
+    char buf[128];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M-%S", timeinfo);
+    return buf;
+}
+
+// ----------------------------------------------------------------------------------------------------
+
 std::string nextWord(const std::string& s, std::size_t& idx)
 {
     std::string w;
@@ -91,8 +110,6 @@ bool loadDatabase(const std::string filename, PhotoDatabase& db)
         std::size_t idx = 0;
         std::string id_str = nextWord(line, idx);
         std::string concept = nextWord(line, idx);
-//        std::cout << strToId(id_str) << " " << concept << std::endl;
-
         std::transform(concept.begin(), concept.end(), concept.begin(), ::tolower);
 
         db.addConcept(concept, strToId(id_str));
@@ -108,14 +125,29 @@ bool loadDatabase(const std::string filename, PhotoDatabase& db)
         p->md5sum = nextWord(line, idx);
         p->rel_filename = nextWord(line, idx);
 
+        std::string opt;
+
         while(true)
         {
-            std::string id_str = nextWord(line, idx);
-            if (id_str.empty())
+            std::string word = nextWord(line, idx);
+            if (word.empty())
                 break;
 
-            Id tag_id = strToId(id_str);
-            p->addTag(tag_id);
+            if (word[0] == '-')
+            {
+                opt = word.substr(1);
+
+                if (opt == "done")
+                    p->setDone();
+
+                continue;
+            }
+
+            if (opt == "tags")
+            {
+                Id tag_id = strToId(word);
+                p->addTag(tag_id);
+            }
         }
 
         db.registerPhoto(p);
@@ -147,10 +179,19 @@ void writeDatabase(const PhotoDatabase& db, const std::string& filename)
         const PhotoData& p = db.photos()[i];
         fout << p.md5sum << " \"" << p.rel_filename << "\"";
 
-        for(const Id& tag : p.tags())
+        if (!p.tags().empty())
         {
-            fout << " " << idToStr(tag);
+            fout << " -tags";
+
+            for(const Id& tag : p.tags())
+                fout << " " << idToStr(tag);
         }
+
+        if (p.isDone())
+        {
+            fout << " -done";
+        }
+
         fout << std::endl;
     }
 }

@@ -118,9 +118,21 @@ void scan(PhotoDatabase& db, const std::string& image_dir)
                 {
                     std::string abs_filename = it_dir->path().string();
                     std::string rel_filename = abs_filename.substr(image_dir.size() + 1);
-                    std::string msum = md5sum(abs_filename);
 
-                    PhotoData* p = db.findPhoto(msum);
+                    std::string msum;
+
+                    PhotoData* p = db.findPhotoByFilename(rel_filename);
+                    if (!p)
+                    {
+                        msum = md5sum(abs_filename);
+                        p = db.findPhoto(msum);
+
+                        if (p)
+                        {
+                            std::cout << "File moved: '" << p->rel_filename << "'' -> '" << rel_filename << "'" << std::endl;
+                        }
+                    }
+
                     if (!p)
                     {
                         // New photo

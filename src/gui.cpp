@@ -88,12 +88,21 @@ void GUI::run()
             return;
         else if (key == 81) // Left-Arrow
         {
+            // Set current photo to done
+            PhotoData& pdata = db_->photos()[photo_idx_];
+            pdata.setDone();
+
             if (photo_idx_ > 0)
                 --photo_idx_;
             reload = true;
         }
         else if (key == 83) // Right-Arrow
         {
+            // Set current photo to done
+            PhotoData& pdata = db_->photos()[photo_idx_];
+            pdata.setDone();
+
+
             if (photo_idx_ + 1 < db_->photos().size())
                 ++photo_idx_;
             reload = true;
@@ -118,11 +127,15 @@ void GUI::run()
         }
         else if (key == 9) // Tab
         {
+            // Set current photo to done
+            PhotoData& pdata = db_->photos()[photo_idx_];
+            pdata.setDone();
+
             Id new_idx = photo_idx_ + 1;
             while(new_idx < db_->photos().size())
             {
                 const PhotoData& pdata = db_->photos()[new_idx];
-                if (pdata.tags().empty())
+                if (pdata.tags().empty() && !pdata.isDone())
                 {
                     photo_idx_ = new_idx;
                     reload = true;
