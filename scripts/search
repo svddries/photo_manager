@@ -1,6 +1,6 @@
 #! /bin/bash
 
-search_result=$(~/code/photo_manager/build/photo_manager ~/env/dbs/photos.txt ~/Dropbox/media/photos search $@)
+search_result=$(~/code/photo_manager/build/photo_manager ~/env/dbs/photos.txt ~/.dropbox/home/Dropbox/media/photos search $@)
 
 target_path=/tmp/photo-manager-search
 
